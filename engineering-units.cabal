@@ -1,8 +1,8 @@
 name:         engineering-units
-version:      0.0.0
+version:      0.0.1
 category:     Data
-synopsis:     A numeric type that automates engineering units.
-description:  A numeric type that automates engineering units.
+synopsis:     A numeric type for managing and automating engineering units.
+description:  A numeric type for managing and automating engineering units.
 author:       Tom Hawkins  <tomahawkins@gmail.com>
 maintainer:   Tom Hawkins  <tomahawkins@gmail.com>
 

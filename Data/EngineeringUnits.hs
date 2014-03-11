@@ -179,7 +179,7 @@ kw   = 1000 * w
 -- | Pounds per inch ^ 2.
 psi  = lbs / in2
 -- | Bar.
-bar  = 0.0689475729 * psi
+bar  = 14.5037738 * psi
 -- | Miles per hour.
 mph  = mi / h
 -- | Revolutions per minute.
