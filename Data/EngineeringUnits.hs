@@ -14,16 +14,16 @@ Automatic unit reduction:
 
 And consistency checking:
 
-> > print $ value (22 * mph + 3 gal) mph      -- Note that a speed (m/s) is inconsistent with a volume (m^3).
+> > print $ value (22 * mph + 3 gal) mph      -- Note that speed (m/s) is inconsistent with volume (m^3).
 > *** Exception: Incompatible units: [M]/[S] /= [M,M,M]/[]
 
 And defining new units is easy:
 
-> -- | Millimeters, a measure of distance.
+> -- | Millimeters, a measure of distance, is 1/1000 of a meter.
 > mm :: Value
 > mm = 0.001 * m
 
-> -- | Joules, a measure of energy.
+> -- | Joules, a measure of energy, is one newton meter.
 > j :: Value
 > j = n * m
 
@@ -34,6 +34,8 @@ module Data.EngineeringUnits
   -- * Distance
   , m    
   , cm   
+  , mm
+  , km
   , in'  
   , ft   
   , mi   
@@ -42,10 +44,14 @@ module Data.EngineeringUnits
   , in2  
   -- * Volume
   , cm3  
+  , ml
+  , l
   , in3  
   , gal  
   -- * Mass
   , kg   
+  , g
+  , mg
   -- * Force
   , n    
   , lbs  
@@ -53,12 +59,16 @@ module Data.EngineeringUnits
   , rev  
   -- * Speed
   , mph  
+  , kph
   -- * Rotational Rate
   , rpm  
   -- * Time
   , s    
   , min' 
   , h
+  -- * Energy
+  , j
+  , btu
   -- * Power
   , hp   
   , w    
@@ -68,7 +78,8 @@ module Data.EngineeringUnits
   , bar
   -- * Flow
   , gpm  
-  -- * Other
+  , lpm
+  -- * Misc
   , s2   
   , radsPerRev
   ) where
@@ -129,6 +140,9 @@ same (Value _ aN aD) (Value _ bN bD) v
   | otherwise = error $ "Incompatible units: " ++ show aN ++ "/" ++ show aD ++ " /= " ++ show bN ++ "/" ++ show bD
 
 -- | Extract a value in the given units.
+--
+--   > value val units
+--   > value (2.54 * cm) in'
 value :: Value -> Value -> Double
 value val@(Value v _ _) units@(Value k _ _) = result
   where
@@ -150,6 +164,18 @@ cm   = 0.01 * m
 cm2  = cm * cm
 -- | Centimeters ^ 3.
 cm3  = cm * cm * cm
+-- | Millimeters.
+mm   = 0.1 * cm
+-- | Kilometers.
+km   = 1000 * m
+-- | Milliliters.
+ml   = cm3
+-- | Liters.
+l    = 1000 * ml
+-- | Grams.
+g    = 0.001 * kg
+-- | Milligrams.
+mg   = 0.001 * g
 -- | Inches.
 in'  = 2.54 * cm
 -- | Inches ^ 2.
@@ -165,27 +191,36 @@ h    = 60 * min'
 -- | Newtons.
 n    = kg * m / s2
 -- | Pounds.
-lbs  = 4.448222 * n
+lbs  = 4.4482216152605 * n
 -- | Miles.
 mi   = 5280 * ft
 -- | Gallons.
 gal  = 231 * in3
 -- | Horsepower.
 hp   = 33000 * ft * lbs / min'
--- | Watts.
-w    = 0.00134102209 * hp
 -- | Kilowatts.
-kw   = 1000 * w
+kw   = 1.3410220888 * hp
+-- | Watts.
+w    = 0.001 * kw
 -- | Pounds per inch ^ 2.
 psi  = lbs / in2
 -- | Bar.
 bar  = 14.5037738 * psi
 -- | Miles per hour.
 mph  = mi / h
+-- | Kilometers per hour.
+kph  = km / h
 -- | Revolutions per minute.
 rpm  = rev / min'
 -- | Gallons per minute.
 gpm  = gal / min'
+-- | Liters per minute.
+lpm  = l / min'
 -- | Radians per revolution: 2 * pi / rev
 radsPerRev = 2 * pi / rev
+-- | Joules.
+j    = n * m
+-- | BTUs.
+btu  = 1055.05585 * j
+
 
