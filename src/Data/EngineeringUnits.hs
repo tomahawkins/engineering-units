@@ -31,60 +31,107 @@ And defining new units is easy:
 module Data.EngineeringUnits
   ( Value
   , value
+
+  -- * SI Prefix Names <<http://physics.nist.gov/cuu/Units/prefixes.html (NIST listing)>>
+  , yocto
+  , zepto
+  , atto
+  , femto
+  , pico
+  , nano
+  , micro
+  , milli
+  , centi
+  , deci
+  , deka
+  , hecto
+  , kilo
+  , mega
+  , giga
+  , tera
+  , peta
+  , exa
+  , zetta
+  , yotta
+
+  -- * SI Prefix Symbols <<http://physics.nist.gov/cuu/Units/prefixes.html (NIST listing)>>
+  , _y
+  , _z
+  , _a
+  , _f
+  , _p
+  , _n
+  , _u
+  , _m
+  , _c
+  , _d
+  , _da
+  , _h
+  , _k
+  , _M
+  , _G
+  , _T
+  , _P
+  , _E
+  , _Z
+  , _Y
+
   -- * Distance
-  , m    
-  , cm   
+  , m
+  , cm
   , mm
   , km
-  , in'  
-  , ft   
-  , mi   
+  , in'
+  , ft
+  , mi
   -- * Area
-  , cm2  
-  , in2  
+  , m2
+  , cm2
+  , in2
   -- * Volume
-  , cm3  
+  , cm3
   , ml
   , l
-  , in3  
-  , gal  
+  , in3
+  , gal
   -- * Mass
-  , kg   
+  , kg
   , g
   , mg
   -- * Force
-  , n    
-  , lbs  
+  , n
+  , lbs
   -- * Rotation
-  , rev  
+  , rev
   -- * Speed
-  , mph  
+  , mph
   , kph
   -- * Rotational Rate
-  , rpm  
+  , rpm
   -- * Time
-  , s    
-  , min' 
+  , s
+  , min'
   , h
   -- * Energy
   , j
   , btu
   -- * Power
-  , hp   
-  , w    
-  , kw   
+  , hp
+  , w
+  , kw
   -- * Pressure
-  , psi  
+  , psi
   , bar
   -- * Flow
-  , gpm  
+  , gpm
   , lpm
   -- * Misc
-  , s2   
+  , s2
+  , s3
   , radsPerRev
   ) where
 
-import Data.List
+import           Data.List
 
 -- | The base units for distance, time, mass, and revolutions.
 data Unit = M | S | Kg | Rev deriving (Eq, Ord, Show)
@@ -148,8 +195,53 @@ value val@(Value v _ _) units@(Value k _ _) = result
   where
   Value result _ _ = same val units $ v / k
 
+yocto = (*) 1e-24
+zepto = (*) 1e-21
+atto  = (*) 1e-18
+femto = (*) 1e-15
+pico  = (*) 1e-12
+nano  = (*) 1e-9
+micro = (*) 1e-6
+milli = (*) 1e-3
+centi = (*) 1e-2
+deci  = (*) 1e-1
+deka  = (*) 1e+1
+hecto = (*) 1e+2
+kilo  = (*) 1e+3
+mega  = (*) 1e+6
+giga  = (*) 1e+9
+tera  = (*) 1e+12
+peta  = (*) 1e+15
+exa   = (*) 1e+18
+zetta = (*) 1e+21
+yotta = (*) 1e+24
+
+_y  = yocto
+_z  = zepto
+_a  = atto
+_f  = femto
+_p  = pico
+_n  = nano
+_u  = micro
+_m  = milli
+_c  = centi
+_d  = deci
+_da = deka
+_h  = hecto
+_k  = kilo
+_M  = mega
+_G  = giga
+_T  = tera
+_P  = peta
+_E  = exa
+_Z  = zetta
+_Y  = yotta
+
+
 -- | Meters.
 m    = Value 1 [M]   []
+-- | Meters ^ 2.
+m2   = m * m
 -- | Seconds.
 s    = Value 1 [S]   []
 -- | Kilograms.
@@ -158,16 +250,18 @@ kg   = Value 1 [Kg]  []
 rev  = Value 1 [Rev] []
 -- | Seconds ^ 2.
 s2   = s * s
+-- | Seconds ^ 3.
+s3   = s * s * s
 -- | Centimeters.
-cm   = 0.01 * m
+cm   = _c m
 -- | Centimeters ^ 2.
 cm2  = cm * cm
 -- | Centimeters ^ 3.
 cm3  = cm * cm * cm
 -- | Millimeters.
-mm   = 0.1 * cm
+mm   = _m m
 -- | Kilometers.
-km   = 1000 * m
+km   = _k m
 -- | Milliliters.
 ml   = cm3
 -- | Liters.
@@ -175,7 +269,7 @@ l    = 1000 * ml
 -- | Grams.
 g    = 0.001 * kg
 -- | Milligrams.
-mg   = 0.001 * g
+mg   = _m g
 -- | Inches.
 in'  = 2.54 * cm
 -- | Inches ^ 2.
@@ -199,9 +293,9 @@ gal  = 231 * in3
 -- | Horsepower.
 hp   = 33000 * ft * lbs / min'
 -- | Kilowatts.
-kw   = 1.3410220888 * hp
+kw   = _k w
 -- | Watts.
-w    = 0.001 * kw
+w    = kg * m2 / s3
 -- | Pounds per inch ^ 2.
 psi  = lbs / in2
 -- | Bar.
