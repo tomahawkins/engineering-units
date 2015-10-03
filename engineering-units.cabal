@@ -1,5 +1,5 @@
 name:         engineering-units
-version:      0.0.1
+version:      0.0.2
 category:     Data
 synopsis:     A numeric type for managing and automating engineering units.
 description:  A numeric type for managing and automating engineering units.

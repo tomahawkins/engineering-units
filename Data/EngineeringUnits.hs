@@ -64,6 +64,9 @@ module Data.EngineeringUnits
   , rpm  
   -- * Time
   , s    
+  , ns
+  , us
+  , ms
   , min' 
   , h
   -- * Energy
@@ -108,18 +111,35 @@ instance Fractional Value where
 
 instance Floating Value where
   pi    = Value pi [] []
+  (Value a n d) ** b = case b of
+    Value 2 [] [] -> normalize $ Value (a ** 2) (n ++ n) (d ++ d)
+    _ -> error "Not supported (**) where power is not a unitless value of 2."
+  sqrt v@(Value a n d) = Value (sqrt a) (sqrt' n) (sqrt' d)
+    where
+    sqrt' a = case a of
+      []  -> []
+      [_] ->  error $ "Sqrt failed on unit reduction: " ++ show v
+      a : b : c
+        | a == b -> a : sqrt' c
+        | otherwise -> error $ "Sqrt failed on unit reduction: " ++ show v
   exp   = error "Not supported yet for Value: exp  "
   log   = error "Not supported yet for Value: log  "
-  sin   = error "Not supported yet for Value: sin  "
-  cos   = error "Not supported yet for Value: cos  "
+  sin   = unitless "sin" sin
+  cos   = unitless "cos" cos
+  tan   = unitless "tan" tan
+  asin  = unitless "asin" asin
+  acos  = unitless "acos" acos
+  atan  = unitless "atan" atan
   sinh  = error "Not supported yet for Value: sinh "
   cosh  = error "Not supported yet for Value: cosh "
-  asin  = error "Not supported yet for Value: asin "
-  acos  = error "Not supported yet for Value: acos "
-  atan  = error "Not supported yet for Value: atan "
   asinh = error "Not supported yet for Value: asinh"
   acosh = error "Not supported yet for Value: acosh"
   atanh = error "Not supported yet for Value: atanh"
+
+unitless :: String -> (Double -> Double) -> Value -> Value
+unitless msg f (Value a n d)
+  | null n && null d = Value (f a) [] []
+  | otherwise        = error $ msg ++ " requires unitless value."
 
 -- | Normalize a value, i.e. simplify and sort units.
 normalize :: Value -> Value
@@ -184,6 +204,12 @@ in2  = in' * in'
 in3  = in' * in' * in'
 -- | Feet.
 ft   = 12 * in'
+-- | Nanoseconds.
+ns = 0.000000001 *s
+-- | Microseconds.
+us = 0.000001 *s
+-- | Milliseconds.
+ms = 0.001 * s
 -- | Minutes.
 min' = 60 * s
 -- | Hours.
